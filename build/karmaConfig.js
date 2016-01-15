@@ -16,6 +16,8 @@
  * Copyright (c) 2015, 2016 by Delphix. All rights reserved.
  */
 
+'use strict';
+
 var BASE_PATH = process.cwd();
 var OUT_DIR = BASE_PATH + '/temp/';
 var SOURCE_DIR = BASE_PATH + '/source/';
@@ -23,15 +25,15 @@ var SOURCE_DIR = BASE_PATH + '/source/';
 // http://karma-runner.github.io/0.13/config/configuration-file.html
 module.exports = function(config) {
     config.set({
-    
+
         basePath: './',
 
         logLevel: config.LOG_ERROR, // also: LOG_DISABLE || LOG_ERROR || LOG_WARN || LOG_INFO || LOG_DEBUG
-        
+
         reportSlowerThan: 200,
 
         browsers: ['PhantomJS2'],
-        
+
         captureTimeout: 20000,      // If browser does not capture in given timeout [ms], kill it
 
         autoWatch: false,
@@ -44,9 +46,9 @@ module.exports = function(config) {
         ],
 
         exclude: [],
-        
+
         preprocessors: {},
-        
+
         frameworks: ['jasmine', 'browserify'],
 
         // https://github.com/Nikku/karma-browserify
@@ -74,9 +76,9 @@ module.exports = function(config) {
                 { type: 'html', subdir: 'report-html' },
                 { type: 'text', subdir: '.', file: 'text.txt' }
             ]
-        },
+        }
     });
-    
+
     // Need to configure this "externally" for the dynamic key
     config.preprocessors[SOURCE_DIR + '/**/*.js'] = ['browserify'];
 

@@ -16,9 +16,9 @@
  * Copyright (c) 2015, 2016 by Delphix. All rights reserved.
  */
 
-/*global jasmine, spyOn, console, window */
-
 'use strict';
+
+/* global beforeEach, expect, console, window */
 
 /*
  * Delphix custom jasmine setup.

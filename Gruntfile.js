@@ -16,7 +16,9 @@
  * Copyright (c) 2015, 2016 by Delphix. All rights reserved.
  */
 
-'use strict'
+'use strict';
+
+/* global exit */
 
 var BUILD_DIR = './build/';
 var SOURCE_DIR = './source/';
@@ -26,24 +28,27 @@ var NODE_MODULES_DIR = './node_modules';
 var DIST_NPM_DIR = DIST_DIR + '/npm/dxLog/';
 var DIST_FLAT_DIR = DIST_DIR + '/es5file/';
 
-var JS_FILE_GLOB = [ SOURCE_DIR + '/*.js', '!' + SOURCE_DIR + '/*.unit.js'];
-var JS_AND_TEST_FILE_GLOB = [ SOURCE_DIR + '/*.js'];
+var JS_SOURCE_FILE_GLOB = [ SOURCE_DIR + '/*.js', '!' + SOURCE_DIR + '/*.unit.js'];
+var JS_FILE_GLOB = [
+    BUILD_DIR + '**/*.js',
+    SOURCE_DIR + '**/*.js',
+    './Gruntfile.js'
+];
 var OTHER_FILE_GLOB = [ SOURCE_DIR + '/*', '!' + SOURCE_DIR + '/*.js'];
-
 
 var browsers;
 
-// Figure out what browsers we should be able to run on the current platform.
-if (/darwin/.test(process.platform)) {
-    browsers = ['Chrome', 'Firefox', 'Safari', 'PhantomJS2']
-} else if (/^win/.test(process.platform)) {
-    browsers = ['Chrome', 'Firefox', 'Internet Explorer', 'PhantomJS2']
-} else {
-    console.log('Unknown or unsupported platform. Please add support for it with a pull request.');
-    exit(1);
-}
-
 module.exports = function(grunt) {
+
+    // Figure out what browsers we should be able to run on the current platform.
+    if (/darwin/.test(process.platform)) {
+        browsers = ['Chrome', 'Firefox', 'Safari', 'PhantomJS2'];
+    } else if (/^win/.test(process.platform)) {
+        browsers = ['Chrome', 'Firefox', 'Internet Explorer', 'PhantomJS2'];
+    } else {
+        grunt.log.writeln('Unknown or unsupported platform. Please add support for it with a pull request.');
+        exit(1);
+    }
 
     grunt.loadNpmTasks('grunt-karma');
     grunt.loadNpmTasks('grunt-eslint');
@@ -52,10 +57,10 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-browserify');
     grunt.loadNpmTasks('grunt-exorcise');
     grunt.loadNpmTasks('grunt-cat');
-    
+
     grunt.initConfig({
         eslint: {
-            target: JS_AND_TEST_FILE_GLOB,
+            target: JS_FILE_GLOB,
             options: {
                 configFile: BUILD_DIR + 'style/eslint',
                 rulePaths: [BUILD_DIR + 'style/eslintRules'],
@@ -64,7 +69,7 @@ module.exports = function(grunt) {
             }
         },
         jscs: {
-            src: JS_AND_TEST_FILE_GLOB,
+            src: JS_FILE_GLOB,
             options: {
                 config: BUILD_DIR + 'style/jscs'
             }
@@ -81,7 +86,7 @@ module.exports = function(grunt) {
                 browserify: {
                     debug: true,
                     transform: [
-                        ['babelify', {presets: ['es2015']}],
+                        ['babelify', { presets: ['es2015'] }]
                     ]
                 },
                 reporters: ['progress', 'junit'],
@@ -91,11 +96,10 @@ module.exports = function(grunt) {
         copy: {
             'dist-npm': {
                 files: [{
-                    src: JS_FILE_GLOB,
+                    src: JS_SOURCE_FILE_GLOB,
                     dest: DIST_NPM_DIR + '/lib/',
                     expand: true,
                     flatten: true
-                    
                 }, {
                     src: OTHER_FILE_GLOB,
                     dest: DIST_NPM_DIR,
@@ -105,22 +109,22 @@ module.exports = function(grunt) {
             }
         },
         browserify: {
-            'distFlatfile': {
-                src: JS_FILE_GLOB,
+            distFlatfile: {
+                src: JS_SOURCE_FILE_GLOB,
                 dest: DIST_FLAT_DIR + '/dxLog.js',
                 options: {
                     browserifyOptions: {
                         debug: true, // source maps!
                         standalone: 'dxLog',
                         transform: [
-                            [ 'babelify', {presets: ['es2015']} ],
+                            [ 'babelify', { presets: ['es2015'] } ]
                         ]
                     }
                 }
             }
         },
         exorcise: {
-            'distFlatfile': {
+            distFlatfile: {
                 options: {},
                 src: DIST_FLAT_DIR + '/dxLog.js',
                 dest: DIST_FLAT_DIR + '/dxLog.map'
@@ -142,12 +146,13 @@ module.exports = function(grunt) {
 
     grunt.registerTask('dev', [ 'karma:dev' ]);
 
-    grunt.registerTask('test', [ 'karma:dist' , '_testreport']);
+    grunt.registerTask('test', [ 'karma:dist', '_testreport']);
 
     grunt.registerTask('_testreport', 'Report on tests', function() {
-        grunt.log.writeln('Style Checks passed')
-        grunt.log.writeln('Full coverage details in: : file://' + process.cwd() + '/temp/testCoverage/report-html/index.html')
-        grunt.log.writeln('Coverge summary:')
+        grunt.log.writeln('Style Checks passed');
+        grunt.log.writeln('Full coverage details in: : file://' + process.cwd() +
+            '/temp/testCoverage/report-html/index.html');
+        grunt.log.writeln('Coverge summary:');
         grunt.task.run('cat:testReport');
     });
 
@@ -169,4 +174,4 @@ module.exports = function(grunt) {
         grunt.file.delete(NODE_MODULES_DIR);
     });
 
-}
+};

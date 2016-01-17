@@ -18,7 +18,7 @@
 
 'use strict';
 
-/* global beforeEach, expect, console, window */
+/* global beforeEach, expect */
 
 /*
  * Delphix custom jasmine setup.

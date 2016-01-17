@@ -5,8 +5,7 @@ This is the source repository for the dxLog module.
 dxLog is a nearly trivial logging system used by dxData.  It has a couple advantages over directly writing to console.log:
 
 1. It provides a "level" value which can be used to limit which kinds of messages actually get written
-2. It allows richer behaviors (e.g. dxLog.fail() will both write to the console and throw an Error)
-3. It provides an easy place to add future richer behaviors in one place, rather than needing to modify all clients.
+2. It provides an easy place to add future richer behaviors in one place, rather than needing to modify all clients.
 
 
 ## Layout of the directory
@@ -38,7 +37,7 @@ To contribute:
 
 Note: grunt dev will run the unit tests on just PhantomJS in a "multi-run" mode, meaning they will be re-run each time you make a source change.
 
-Other interestig tasks you can run can be found with: grunt --help
+Other interesting tasks you can run can be found with: grunt --help
 
 
 ## Legalness

@@ -42,7 +42,7 @@ var LEVEL = {
 };
 
 /*
- * Report a failing message. Writes the info to the console and throws an error
+ * Report a failing message by way of throwing an error
  */
 function fail() {
     throw new Error(arguments[0]);
@@ -51,27 +51,27 @@ function fail() {
 /*
  * Report a warning message. Writes the info to the console
  */
-function warn() {
+function warn(...args) {
     if (module.exports.level <= LEVEL.WARN) {
-        console.warn.apply(console, arguments);
+        console.warn(...args);
     }
 }
 
 /*
  * Report an info message. Writes the info to the console
  */
-function info() {
+function info(...args) {
     if (module.exports.level <= LEVEL.INFO) {
-        console.info.apply(console, arguments);
+        console.info(...args);
     }
 }
 
 /*
  * Report an debug message. Writes the info to the console
  */
-function debug() {
+function debug(...args) {
     if (module.exports.level <= LEVEL.DEBUG) {
-        console.log.apply(console, arguments);
+        console.log(...args);
     }
 }
 

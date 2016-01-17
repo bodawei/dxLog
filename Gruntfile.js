@@ -16,9 +16,11 @@
  * Copyright (c) 2015, 2016 by Delphix. All rights reserved.
  */
 
+/* eslint-env node */
+
 'use strict';
 
-/* global exit */
+var jitGrunt = require('jit-grunt');
 
 var BUILD_DIR = './build/';
 var SOURCE_DIR = './source/';
@@ -36,9 +38,10 @@ var JS_FILE_GLOB = [
 ];
 var OTHER_FILE_GLOB = [ SOURCE_DIR + '/*', '!' + SOURCE_DIR + '/*.js'];
 
-var browsers;
-
 module.exports = function(grunt) {
+    var browsers;
+
+    jitGrunt(grunt);
 
     // Figure out what browsers we should be able to run on the current platform.
     if (/darwin/.test(process.platform)) {
@@ -46,17 +49,8 @@ module.exports = function(grunt) {
     } else if (/^win/.test(process.platform)) {
         browsers = ['Chrome', 'Firefox', 'Internet Explorer', 'PhantomJS2'];
     } else {
-        grunt.log.writeln('Unknown or unsupported platform. Please add support for it with a pull request.');
-        exit(1);
+        grunt.fail.fatal('Unknown or unsupported platform. Please add support for it with a pull request.');
     }
-
-    grunt.loadNpmTasks('grunt-karma');
-    grunt.loadNpmTasks('grunt-eslint');
-    grunt.loadNpmTasks('grunt-jscs');
-    grunt.loadNpmTasks('grunt-contrib-copy');
-    grunt.loadNpmTasks('grunt-browserify');
-    grunt.loadNpmTasks('grunt-exorcise');
-    grunt.loadNpmTasks('grunt-cat');
 
     grunt.initConfig({
         eslint: {
@@ -94,15 +88,24 @@ module.exports = function(grunt) {
             }
         },
         copy: {
-            'dist-npm': {
+            distNpm: {
+                files: [{
+                    src: OTHER_FILE_GLOB,
+                    dest: DIST_NPM_DIR,
+                    expand: true,
+                    flatten: true
+                }]
+            }
+        },
+        babel: {
+            options: {
+                sourceMap: true,
+                presets: ['es2015']
+            },
+            distNpm: {
                 files: [{
                     src: JS_SOURCE_FILE_GLOB,
                     dest: DIST_NPM_DIR + '/lib/',
-                    expand: true,
-                    flatten: true
-                }, {
-                    src: OTHER_FILE_GLOB,
-                    dest: DIST_NPM_DIR,
                     expand: true,
                     flatten: true
                 }]
@@ -159,7 +162,8 @@ module.exports = function(grunt) {
     grunt.registerTask('_dist', 'Build final distribution', function() {
         grunt.file.delete(DIST_DIR, {force: true});
         grunt.file.mkdir(DIST_DIR);
-        grunt.task.run('copy:dist-npm');
+        grunt.task.run('copy:distNpm');
+        grunt.task.run('babel:distNpm');
         grunt.task.run('browserify:distFlatfile');
         grunt.task.run('exorcise:distFlatfile');
     });

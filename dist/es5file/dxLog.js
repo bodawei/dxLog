@@ -44,7 +44,7 @@ var LEVEL = {
 };
 
 /*
- * Report a failing message. Writes the info to the console and throws an error
+ * Report a failing message by way of throwing an error
  */
 function fail() {
     throw new Error(arguments[0]);
@@ -55,7 +55,9 @@ function fail() {
  */
 function warn() {
     if (module.exports.level <= LEVEL.WARN) {
-        console.warn.apply(console, arguments);
+        var _console;
+
+        (_console = console).warn.apply(_console, arguments);
     }
 }
 
@@ -64,7 +66,9 @@ function warn() {
  */
 function info() {
     if (module.exports.level <= LEVEL.INFO) {
-        console.info.apply(console, arguments);
+        var _console2;
+
+        (_console2 = console).info.apply(_console2, arguments);
     }
 }
 
@@ -73,7 +77,9 @@ function info() {
  */
 function debug() {
     if (module.exports.level <= LEVEL.DEBUG) {
-        console.log.apply(console, arguments);
+        var _console3;
+
+        (_console3 = console).log.apply(_console3, arguments);
     }
 }
 

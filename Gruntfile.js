@@ -27,7 +27,7 @@ var SOURCE_DIR = './source/';
 var OUT_DIR = './temp/';
 var DIST_DIR = './dist/';
 var NODE_MODULES_DIR = './node_modules';
-var DIST_NPM_DIR = DIST_DIR + '/npm/dxLog/';
+var DIST_NPM_DIR = DIST_DIR + '/npm/dxlog/';
 var DIST_FLAT_DIR = DIST_DIR + '/es5file/';
 
 var JS_SOURCE_FILE_GLOB = [ SOURCE_DIR + '/*.js', '!' + SOURCE_DIR + '/*.unit.js'];

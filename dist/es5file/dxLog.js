@@ -28,7 +28,7 @@
  *    dxLog.warn();
  *    dxLog.info();
  *    dxLog.debug();
- * If the dxLog.level value is set to FAIL, WARN, INFO or DEBUG, then log messages will only be written out at
+ * If the dxLog.setLogLevel() is set to FAIL, WARN, INFO or DEBUG, then log messages will only be written out at
  * the specified level or higher (thus, if set to INFO, the default, DEBUG messages will not be logged)
  */
 
@@ -43,6 +43,8 @@ var LEVEL = {
     DEBUG: 20
 };
 
+var level = LEVEL.INFO;
+
 /*
  * Report a failing message by way of throwing an error
  */
@@ -54,7 +56,7 @@ function fail() {
  * Report a warning message. Writes the info to the console
  */
 function warn() {
-    if (module.exports.level <= LEVEL.WARN) {
+    if (getLogLevel() <= LEVEL.WARN) {
         var _console;
 
         (_console = console).warn.apply(_console, arguments);
@@ -65,7 +67,7 @@ function warn() {
  * Report an info message. Writes the info to the console
  */
 function info() {
-    if (module.exports.level <= LEVEL.INFO) {
+    if (getLogLevel() <= LEVEL.INFO) {
         var _console2;
 
         (_console2 = console).info.apply(_console2, arguments);
@@ -76,16 +78,35 @@ function info() {
  * Report an debug message. Writes the info to the console
  */
 function debug() {
-    if (module.exports.level <= LEVEL.DEBUG) {
+    if (getLogLevel() <= LEVEL.DEBUG) {
         var _console3;
 
         (_console3 = console).log.apply(_console3, arguments);
     }
 }
 
+/*
+ * Set the log level. Any log messages below (less significant than) the specified level
+ * will not be reported.
+ */
+function setLogLevel(newLevel) {
+    if (typeof newLevel !== 'number' || newLevel < 0 || newLevel > 100) {
+        fail('New log level must be between 0 and 100. Got "' + newLevel + '". See dxLog.LEVEL for constants.');
+    }
+    level = newLevel;
+}
+
+/*
+ * Retrieve the current log level.
+ */
+function getLogLevel() {
+    return level;
+}
+
 module.exports = {
     LEVEL: LEVEL,
-    level: LEVEL.INFO,
+    setLogLevel: setLogLevel,
+    getLogLevel: getLogLevel,
     fail: fail,
     warn: warn,
     info: info,

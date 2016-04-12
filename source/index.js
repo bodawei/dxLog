@@ -27,19 +27,21 @@
  *    dxLog.warn();
  *    dxLog.info();
  *    dxLog.debug();
- * If the dxLog.level value is set to FAIL, WARN, INFO or DEBUG, then log messages will only be written out at
+ * If the dxLog.setLogLevel() is set to FAIL, WARN, INFO or DEBUG, then log messages will only be written out at
  * the specified level or higher (thus, if set to INFO, the default, DEBUG messages will not be logged)
  */
 
 /*
  * Define constants for the logging level
  */
-var LEVEL = {
+const LEVEL = {
     FAIL: 80,
     WARN: 60,
     INFO: 40,
     DEBUG: 20
 };
+
+let level = LEVEL.INFO;
 
 /*
  * Report a failing message by way of throwing an error
@@ -52,7 +54,7 @@ function fail() {
  * Report a warning message. Writes the info to the console
  */
 function warn(...args) {
-    if (module.exports.level <= LEVEL.WARN) {
+    if (getLogLevel() <= LEVEL.WARN) {
         console.warn(...args);
     }
 }
@@ -61,7 +63,7 @@ function warn(...args) {
  * Report an info message. Writes the info to the console
  */
 function info(...args) {
-    if (module.exports.level <= LEVEL.INFO) {
+    if (getLogLevel() <= LEVEL.INFO) {
         console.info(...args);
     }
 }
@@ -70,14 +72,33 @@ function info(...args) {
  * Report an debug message. Writes the info to the console
  */
 function debug(...args) {
-    if (module.exports.level <= LEVEL.DEBUG) {
+    if (getLogLevel() <= LEVEL.DEBUG) {
         console.log(...args);
     }
 }
 
+/*
+ * Set the log level. Any log messages below (less significant than) the specified level
+ * will not be reported.
+ */
+function setLogLevel(newLevel) {
+    if (typeof newLevel !== 'number' || newLevel < 0 || newLevel > 100) {
+        fail(`New log level must be between 0 and 100. Got "${newLevel}". See dxLog.LEVEL for constants.`);
+    }
+    level = newLevel;
+}
+
+/*
+ * Retrieve the current log level.
+ */
+function getLogLevel() {
+    return level;
+}
+
 module.exports = {
     LEVEL: LEVEL,
-    level: LEVEL.INFO,
+    setLogLevel: setLogLevel,
+    getLogLevel: getLogLevel,
     fail: fail,
     warn: warn,
     info: info,

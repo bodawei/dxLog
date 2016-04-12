@@ -23,11 +23,20 @@
 
 const dxLog = require('./index.js');
 
-describe('dxLog', function() {
+describe('dxLog', () => {
+    let startingLevel;
 
-    describe('fail()', function() {
+    beforeEach(() => {
+        startingLevel = dxLog.getLogLevel();
+    });
 
-        it('throws an Error', function() {
+    afterEach(() => {
+        dxLog.setLogLevel(startingLevel);
+    });
+
+    describe('fail()', () => {
+
+        it('throws an Error', () => {
             spyOn(console, 'error');
 
             expect(function() {
@@ -35,7 +44,7 @@ describe('dxLog', function() {
             }).toThrowError('foo');
         });
 
-        it('does not log a message', function() {
+        it('does not log a message', () => {
             spyOn(console, 'error');
 
             expect(function() {
@@ -47,9 +56,9 @@ describe('dxLog', function() {
 
     });
 
-    describe('warn()', function() {
+    describe('warn()', () => {
 
-        it('logs a warning message', function() {
+        it('logs a warning message', () => {
             spyOn(console, 'warn');
 
             dxLog.warn('foo');
@@ -57,22 +66,20 @@ describe('dxLog', function() {
             expect(console.warn).toHaveBeenCalled();
         });
 
-        it('will not log a message if the log level is above WARN', function() {
-            var oldMode = dxLog.level;
-            dxLog.level = dxLog.LEVEL.FAIL;
+        it('will not log a message if the log level is above WARN', () => {
+            dxLog.setLogLevel(dxLog.LEVEL.FAIL);
             spyOn(console, 'warn');
 
             dxLog.warn('foo');
 
             expect(console.warn).not.toHaveBeenCalled();
-            dxLog.level = oldMode;
         });
 
     });
 
-    describe('info()', function() {
+    describe('info()', () => {
 
-        it('logs a message', function() {
+        it('logs a message', () => {
             spyOn(console, 'info');
 
             dxLog.info('foo');
@@ -80,57 +87,84 @@ describe('dxLog', function() {
             expect(console.info).toHaveBeenCalled();
         });
 
-        it('will not log a message if the log level is above INFO', function() {
-            var oldMode = dxLog.level;
-            dxLog.level = dxLog.LEVEL.WARN;
+        it('will not log a message if the log level is above INFO', () => {
+            dxLog.setLogLevel(dxLog.LEVEL.WARN);
             spyOn(console, 'info');
 
             dxLog.info('foo');
 
             expect(console.info).not.toHaveBeenCalled();
-            dxLog.level = oldMode;
         });
 
     });
 
-    describe('debug()', function() {
+    describe('debug()', () => {
 
-        it('logs a message (if log level is at least debug)', function() {
-            var oldMode = dxLog.level;
-            dxLog.level = dxLog.LEVEL.DEBUG;
+        it('logs a message (if log level is at least debug)', () => {
+            dxLog.setLogLevel(dxLog.LEVEL.DEBUG);
             spyOn(console, 'log');
 
             dxLog.debug('foo');
 
             expect(console.log).toHaveBeenCalled();
-
-            dxLog.level = oldMode;
         });
 
-        it('will not log a message if the log level is above DEBUG', function() {
-            var oldMode = dxLog.level;
-            dxLog.level = dxLog.LEVEL.WARN;
+        it('will not log a message if the log level is above DEBUG', () => {
+            dxLog.setLogLevel(dxLog.LEVEL.FAIL);
             spyOn(console, 'log');
 
             dxLog.debug('foo');
 
             expect(console.log).not.toHaveBeenCalled();
-            dxLog.level = oldMode;
         });
 
     });
 
-    describe('level', function() {
+    describe('getLogLevel()', () => {
 
-        it('is set to INFO by default', function() {
-            expect(dxLog.level).toEqual(dxLog.LEVEL.INFO);
+        it('returns the INFO level by default', () => {
+            expect(dxLog.getLogLevel()).toEqual(dxLog.LEVEL.INFO);
+        });
+
+        it('returns the level set with setLogLevel', () => {
+            dxLog.setLogLevel(dxLog.LEVEL.DEBUG);
+
+            expect(dxLog.getLogLevel()).toEqual(dxLog.LEVEL.DEBUG);
         });
 
     });
 
-    describe('LEVEL', function() {
+    describe('setLogLevel()', () => {
 
-        it('has the expected keys', function() {
+        it('can be used to change the log level', () => {
+            dxLog.setLogLevel(dxLog.LEVEL.DEBUG);
+
+            expect(dxLog.getLogLevel()).toEqual(dxLog.LEVEL.DEBUG);
+        });
+
+        it('throws an error if called with a non-number', () => {
+            expect(() => {
+                dxLog.setLogLevel('hi');
+            }).toThrowError('New log level must be between 0 and 100. Got "hi". See dxLog.LEVEL for constants.');
+        });
+
+        it('throws an error if called with a number below range', () => {
+            expect(() => {
+                dxLog.setLogLevel(-1);
+            }).toThrowError('New log level must be between 0 and 100. Got "-1". See dxLog.LEVEL for constants.');
+        });
+
+        it('throws an error if called with a number above range', () => {
+            expect(() => {
+                dxLog.setLogLevel(1000);
+            }).toThrowError('New log level must be between 0 and 100. Got "1000". See dxLog.LEVEL for constants.');
+        });
+
+    });
+
+    describe('LEVEL', () => {
+
+        it('has the expected keys', () => {
             expect(Object.keys(dxLog.LEVEL).sort()).toEqual([ 'DEBUG', 'FAIL', 'INFO', 'WARN']);
         });
 

@@ -2,7 +2,7 @@
 
 dxLog is a nearly trivial logging system used by dxData.  It has a couple advantages over directly writing to console.log:
 
-1. It provides a "level" value which can be used to limit which kinds of messages actually get written
+1. It provides a "log level" value which can be used to limit which kinds of messages actually get written
 2. It provides an easy place to add future richer behaviors in one place, rather than needing to modify all clients.
 
 This is actively supported on:
@@ -18,7 +18,7 @@ This is actively supported on:
    dxLog = require('dxLog');
    ...
    dxLog.fail('This did not work');
-
+3. Use setLogLevel(dxLog.LEVEL.DEBUG), for example, to limit what log messages get reported.
 
 ## Legalness
 ```

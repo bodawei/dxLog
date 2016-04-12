@@ -1,7 +1,7 @@
 {
   "name": "dxlog",
   "description": "A simple module for logging messages. Used by dxData.",
-  "version": "0.9.1",
+  "version": "1.0.0",
   "homepage": "https://github.com/delphix/dxLog",
   "license": "Apache-2.0",
   "copyright": "Copyright (c) 2015, 2016 by Delphix. All rights reserved.",
